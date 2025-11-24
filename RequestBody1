@@ -1,0 +1,50 @@
+package com.Don.example.spring.RequestBody11.com;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
+
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+package com.Don.example.spring.RequestBody11.com;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Student {
+	private String name;
+	private String email;
+	private int age;
+
+}
+package com.Don.example.spring.RequestBody11.com;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/students")
+public class StudentController {
+    @GetMapping("/info")
+    public Student getStudentInfo() {
+        return new Student("Satish", "sunnapudiSatish@com", 23);
+    }
+
+    @PostMapping
+    public Student Satish(@RequestBody Student student) {
+        student.setAge(student.getAge() + 1);
+        return student;
+    }
+}
