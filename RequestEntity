@@ -1,0 +1,65 @@
+package com.Ramu.example.spring.RequestEntity11.com;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+
+@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+package com.Ramu.example.spring.RequestEntity11.com;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.http.HttpHeaders;
+
+@Data
+@AllArgsConstructor
+public class UserResponse {
+    private String method;
+    private String url;
+    private HttpHeaders headers;
+    private Object body;
+}
+package com.Ramu.example.spring.RequestEntity11.com;
+
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class RequestEntityController {
+
+    @PostMapping("/users")
+    public ResponseEntity<UserResponse> handle(RequestEntity<User> requestEntity) {
+
+        UserResponse info = new UserResponse(
+                requestEntity.getMethod().name(),
+                requestEntity.getUrl().toString(),
+                requestEntity.getHeaders(),
+                requestEntity.getBody()
+        );
+
+        return ResponseEntity.ok(info);
+    }
+}
+package com.Ramu.example.spring.RequestEntity11.com;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class User {
+	private String name;
+	private int age;
+
+}
