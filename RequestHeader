@@ -1,0 +1,47 @@
+package com.Abbu.example.spring.RequestHeader11.com;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+
+@SpringBootApplication (exclude= {DataSourceAutoConfiguration.class})
+public class Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
+
+}
+package com.Abbu.example.spring.RequestHeader11.com;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Business {
+	private String businessAgent;
+	private String authorization;
+
+}
+package com.Abbu.example.spring.RequestHeader11.com;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api")
+public class HeaderController {
+
+    @GetMapping("/headers")
+    public Business getHeaders(
+            @RequestHeader(value = "Business-Agent", defaultValue = "Satish") String businessAgent,
+            @RequestHeader(value = "Authorization", required = false) String auth) {
+
+        return new Business(businessAgent, auth);
+    }
+}
