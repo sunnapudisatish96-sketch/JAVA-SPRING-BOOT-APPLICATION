@@ -1,0 +1,79 @@
+package com.Amma.example.Validation_com;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.Data;
+
+@Data
+
+public class ContactRequest {
+	@NotBlank(message="Name cannot be empty")
+	private String name;
+	@NotBlank(message="please enter a valid email")
+	private String email;
+	@Pattern(regexp="^[0-9]{10}$",message="Mobile Number must be 10 digit")
+	private String mobileNumber;
+	@NotBlank(message="message cannot be empty")
+	private String message;
+
+}
+package com.Amma.example.Validation_com;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/contact")
+public class ContactController {
+	@PostMapping
+	public String submitContact(@Valid @RequestBody ContactRequest request) {
+		return  "Contact detailed sumitted successfully";
+	}
+
+}
+package com.Amma.example.Validation_com;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+
+@RestControllerAdvice
+public class ValidationErrorHandler {
+
+    // Handles @Valid @RequestBody errors
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationsErrors(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+}
+package com.Amma.example.Validation_com;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
+
+@SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
+public class ValidationComApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ValidationComApplication.class, args);
+	}
+
+}
